@@ -44,6 +44,7 @@ export function CreateClientDialog() {
     const formData = new FormData(e.currentTarget);
     mutation.mutate({
       name: formData.get("name") as string,
+      vat: formData.get("vat") as string,
       email: formData.get("email") as string,
       phone: formData.get("phone") as string,
       address: formData.get("address") as string,
@@ -70,7 +71,11 @@ export function CreateClientDialog() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="phone">Phone</Label>
-            <Input id="phone" name="phone" />
+            <Input id="phone" name="phone" type="tel" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="vat">VAT</Label>
+            <Input id="vat" name="vat" required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="address">Address</Label>

@@ -54,6 +54,7 @@ export const clients = createTable('clients', {
   name: text('name').notNull(),
   email: text('email').notNull(),
   phone: text('phone'),
+  vat: text('vat').notNull(),
   address: text('address'),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)

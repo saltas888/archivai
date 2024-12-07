@@ -10,6 +10,10 @@ export const columns: ColumnDef<Client>[] = [
     header: "Name",
   },
   {
+    accessorKey: "vat",
+    header: "VAT",
+  },
+  {
     accessorKey: "email",
     header: "Email",
   },
