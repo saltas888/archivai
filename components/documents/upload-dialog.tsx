@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { UploadDropzone } from "@/lib/uploadthing";
+import { UploadButton, UploadDropzone } from "@/lib/uploadthing";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -164,10 +164,7 @@ export function UploadDialog() {
               </div>
             ) : (
               <div className="w-full max-w-md space-y-4">
-                <div className="flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mx-auto">
-                  <Upload className="h-10 w-10 text-primary" />
-                </div>
-                <UploadDropzone
+                <UploadButton
                   endpoint="documentUploader"
                   onClientUploadComplete={(res) => {
                     console.log(res);
@@ -184,11 +181,25 @@ export function UploadDialog() {
                     }
                   }}
                   onUploadError={(error: Error) => {
+                    console.trace(error)
                     toast({
                       title: "Upload failed",
                       description: error.message,
                       variant: "destructive",
                     });
+                  }}
+                  onBeforeUploadBegin={(files) => {
+                    console.log('asdasdas')
+                    console.trace()
+                    // Preprocess files before uploading (e.g. rename them)
+                    return files.map(
+                      (f) => new File([f], "renamed-" + f.name, { type: f.type }),
+                    );
+                  }}
+                  onUploadBegin={(name) => {
+                    console.trace()
+                    // Do something once upload begins
+                    console.log("Uploading: ", name);
                   }}
                 />
               </div>
