@@ -6,15 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { UploadButton, UploadDropzone } from "@/lib/uploadthing";
+import { UploadButton } from "@/lib/uploadthing";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { RECORD_TYPE_VALUES } from "@/lib/db/schema";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { createDocument, extractDocumentData, getClients } from "@/lib/api";
-import { FileText, Loader2, Upload } from "lucide-react";
+import { FileText, Loader2, CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 
 const documentSchema = z.object({
   recordType: z.enum(RECORD_TYPE_VALUES),
@@ -27,6 +31,9 @@ const documentSchema = z.object({
   paidVatPercentage: z.string().optional(),
   additionalInfo: z.string().optional(),
   clientId: z.string().min(1, "Client is required"),
+  date: z.date({
+    required_error: "Date is required",
+  }),
 });
 
 type DocumentFormData = z.infer<typeof documentSchema>;
@@ -44,10 +51,11 @@ export function UploadDialog() {
     queryFn: getClients,
   });
 
-  const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm<DocumentFormData>({
+  const { register, handleSubmit, formState: { errors }, setValue, reset, watch } = useForm<DocumentFormData>({
     resolver: zodResolver(documentSchema),
   });
 
+  const date = watch('date');
   const mutation = useMutation({
     mutationFn: createDocument,
     onSuccess: () => {
@@ -79,7 +87,11 @@ export function UploadDialog() {
       if (data.recordNumber) setValue("recordNumber", data.recordNumber);
       if (data.totalAmount) setValue("totalAmount", data.totalAmount);
       if (data.paidVatPercentage) setValue("paidVatPercentage", data.paidVatPercentage);
-      
+      if (data.date) setValue("date", new Date(data.date));
+      if (data.recordType) setValue("recordType", data.recordType);
+      if (data.purpose) setValue("purpose", data.purpose);
+      if (data.currency) setValue("currency", data.currency);
+
       setStep('details');
       toast({
         title: "Success",
@@ -167,7 +179,6 @@ export function UploadDialog() {
                 <UploadButton
                   endpoint="documentUploader"
                   onClientUploadComplete={(res) => {
-                    console.log(res);
                     if (res?.[0]) {
                       setFileUrl(res[0].url);
                       setFileName(res[0].name);
@@ -181,7 +192,6 @@ export function UploadDialog() {
                     }
                   }}
                   onUploadError={(error: Error) => {
-                    console.trace(error)
                     toast({
                       title: "Upload failed",
                       description: error.message,
@@ -189,15 +199,12 @@ export function UploadDialog() {
                     });
                   }}
                   onBeforeUploadBegin={(files) => {
-                    console.log('asdasdas')
-                    console.trace()
                     // Preprocess files before uploading (e.g. rename them)
                     return files.map(
                       (f) => new File([f], "renamed-" + f.name, { type: f.type }),
                     );
                   }}
                   onUploadBegin={(name) => {
-                    console.trace()
                     // Do something once upload begins
                     console.log("Uploading: ", name);
                   }}
@@ -246,6 +253,34 @@ export function UploadDialog() {
             </div>
             
             <div className="space-y-2">
+              <Label>Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !date && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {date ? format(date, "PPP") : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={(date: Date) => date && setValue('date', date)}
+                  />
+                </PopoverContent>
+              </Popover>
+              {errors.date && (
+                <p className="text-sm text-destructive">{errors.date.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="serviceProviderName">Service Provider</Label>
               <Input {...register("serviceProviderName")} />
               {errors.serviceProviderName && (
@@ -280,7 +315,7 @@ export function UploadDialog() {
               
               <div className="space-y-2">
                 <Label htmlFor="currency">Currency</Label>
-                <Input {...register("currency")} defaultValue="USD" />
+                <Input {...register("currency")} defaultValue="EUR" />
                 {errors.currency && (
                   <p className="text-sm text-destructive">{errors.currency.message}</p>
                 )}
