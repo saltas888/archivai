@@ -89,7 +89,7 @@ export function AddMember() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(_open) => _open ? setOpen(true) : closeDialog()}>
       <DialogTrigger asChild>
         <Button>Add Member</Button>
       </DialogTrigger>

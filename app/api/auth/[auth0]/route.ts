@@ -10,7 +10,7 @@ export const GET = handleAuth({
     async afterCallback(req: NextApiRequest, session) {
       if (session?.user) {
         const existingUser = await db.query.users.findFirst({
-          where: eq(users.auth0Id, session.user.sub),
+          where: eq(users.email, session.user.email),
         });
 
         if (existingUser) {

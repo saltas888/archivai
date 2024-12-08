@@ -73,6 +73,8 @@ class Auth0InvitationService {
         email,
         mark_email_as_verified: false,
         connection_id: 'con_3t6JSFwTXYZF8RmS', // Use your default connection
+        result_url: "https://localhost:3000/api/auth/callback",
+        includeEmailInRedirect: true,
       });
       const invitationUrl = changePasswordResponse.data.ticket;
       // console.log("invitationUrl", invitationUrl);
