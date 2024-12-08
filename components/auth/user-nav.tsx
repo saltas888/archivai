@@ -1,6 +1,7 @@
 "use client";
 
 import { useUser } from "@auth0/nextjs-auth0/client";
+import { useQuery } from "@tanstack/react-query";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,9 +10,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
+import Image from "next/image";
+
+async function getOrganization() {
+  const response = await fetch("/api/organizations");
+  if (!response.ok) throw new Error("Failed to fetch organization");
+  return response.json();
+}
 
 export function UserNav() {
   const { user } = useUser();
+  const { data: organization } = useQuery({
+    queryKey: ["organization"],
+    queryFn: getOrganization,
+  });
 
   if (!user) return null;
 
@@ -19,11 +31,19 @@ export function UserNav() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full border border-gray-200">
-          {user.picture ? (
-            <img
+          {organization?.logo ? (
+            <Image
+              src={organization.logo}
+              alt={organization.name}
+              fill
+              className="rounded-full object-cover"
+            />
+          ) : user.picture ? (
+            <Image
               src={user.picture}
               alt={user.name || "User avatar"}
-              className="h-8 w-8 rounded-full"
+              fill
+              className="rounded-full object-cover"
             />
           ) : (
             <User className="h-4 w-4" />
@@ -37,6 +57,11 @@ export function UserNav() {
             <p className="text-xs leading-none text-muted-foreground">
               {user.email}
             </p>
+            {organization && (
+              <p className="text-xs text-muted-foreground">
+                {organization.name}
+              </p>
+            )}
           </div>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>

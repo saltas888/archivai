@@ -24,6 +24,7 @@ export const userRoleEnum = pgEnum('user_role', USER_ROLE_VALUES);
 export const organizations = createTable('organizations', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
+  logo: text('logo'),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
