@@ -83,6 +83,8 @@ class Auth0InvitationService {
     }
   }
 
+
+
   /**
    * Assign roles to a user
    * @param userId - ID of the user
@@ -102,6 +104,33 @@ class Auth0InvitationService {
     } catch (error) {
       console.error('Error assigning roles:', error);
       throw new Error('Failed to assign roles');
+    }
+  }
+
+  /**
+   * Delete a user by email
+   * @param email - Email of the user to delete
+   * @returns Boolean indicating successful deletion
+   */
+  async deleteUserByEmail(email: string): Promise<boolean> {
+    try {
+      // Find users by email
+      const userByEmailResponse = await this.managementClient.usersByEmail.getByEmail({email});
+      const existingUsers = userByEmailResponse.data.filter(user => user.email === email);
+      // If no users found, throw an error
+      if (existingUsers.length === 0) {
+        throw new Error('No users found with this email');
+      }
+
+      // Delete all users with this email (in case of multiple accounts)
+      await Promise.all(
+        existingUsers.map(user => this.managementClient.users.delete({ id: user.user_id }))
+      );
+
+      return true;
+    } catch (error) {
+      console.error('Error deleting user by email:', error);
+      throw new Error('Failed to delete user');
     }
   }
 }
