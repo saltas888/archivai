@@ -49,8 +49,23 @@ export const columns: ColumnDef<Doc>[] = [
   //   enableSorting: false,
   // },
   {
-    accessorKey: "recordType",
-    header: "Type",
+    accessorKey: "date",
+    header: "Date",
+    cell: EditableCell,
+  },
+  {
+    accessorKey: "totalAmount",
+    header: "Amount",
+    cell: EditableCell,
+  },
+  {
+    accessorKey: "recordNumber",
+    header: "Record#",
+    cell: EditableCell,
+  },
+  {
+    accessorKey: "paidVatPercentage",
+    header: "VAT %",
     cell: EditableCell,
   },
   {
@@ -64,28 +79,13 @@ export const columns: ColumnDef<Doc>[] = [
     cell: EditableCell,
   },
   {
-    accessorKey: "recordNumber",
-    header: "Record Number",
-    cell: EditableCell,
-  },
-  {
-    accessorKey: "date",
-    header: "Date",
-    cell: EditableCell,
-  },
-  {
-    accessorKey: "totalAmount",
-    header: "Amount",
-    cell: EditableCell,
-  },
-  {
-    accessorKey: "paidVatPercentage",
-    header: "VAT %",
-    cell: EditableCell,
-  },
-  {
     accessorKey: "purpose",
     header: "Purpose",
+    cell: EditableCell,
+  },
+  {
+    accessorKey: "recordType",
+    header: "Type",
     cell: EditableCell,
   },
   {
