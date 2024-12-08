@@ -10,6 +10,7 @@ import {
   decimal,
   serial,
   uuid,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 export const createTable = pgTableCreator((name) => `dms_${name}`);
@@ -33,11 +34,14 @@ export const organizations = createTable('organizations', {
 
 export const users = createTable('users', {
   id: uuid('id').defaultRandom().primaryKey(),
-  auth0Id: text('auth0_id').notNull().unique(),
+  auth0Id: text('auth0_id').unique(),
   email: text('email').notNull(),
   name: text('name'),
   organizationId: uuid('organization_id').references(() => organizations.id),
   role: userRoleEnum('role').notNull().default('member'),
+  isInvited: boolean('is_invited').default(false),
+  invitedBy: uuid('invited_by'),
+  invitedAt: timestamp("invited_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -96,6 +100,10 @@ export const usersRelations = relations(users, ({ one }) => ({
 	organization: one(organizations, {
     fields: [users.organizationId], references: [organizations.id] 
   }),
+  invitee: one(users, {
+		fields: [users.invitedBy],
+		references: [users.id],
+	}),
 }));
 
 export const clientRelations = relations(clients, ({ one, many }) => ({

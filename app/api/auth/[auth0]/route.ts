@@ -13,7 +13,20 @@ export const GET = handleAuth({
           where: eq(users.auth0Id, session.user.sub),
         });
 
-        if (!existingUser) {
+        if (existingUser) {
+          if (existingUser.isInvited && !existingUser.auth0Id) {
+            // Convert invited user to regular user
+            await db
+              .update(users)
+              .set({
+                auth0Id: session.user.sub,
+                name: session.user.name,
+                isInvited: false,
+              })
+              .where(eq(users.id, existingUser.id));
+          }
+        } else {
+          // Create new user if not found
           await db.insert(users).values({
             auth0Id: session.user.sub,
             email: session.user.email,
