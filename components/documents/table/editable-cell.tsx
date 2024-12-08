@@ -103,7 +103,7 @@ export function EditableCell({ getValue, row, column }: EditableCellProps) {
             {value ? format(new Date(value), "PPP") : <span>Pick a date</span>}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="w-auto p-4" align="start">
           <Calendar
             mode="single"
             selected={new Date(value)}

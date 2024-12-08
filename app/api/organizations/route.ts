@@ -54,8 +54,8 @@ export async function PATCH(req: Request) {
 
     if (!user?.organizationId || user.role !== 'admin') {
       return NextResponse.json(
-        { error: "Unauthorized or no organization" },
-        { status: 401 }
+        { error: "Unauthorized - Admin access required" },
+        { status: 403 }
       );
     }
 
@@ -88,9 +88,6 @@ export async function GET() {
 
     const user = await db.query.users.findFirst({
       where: eq(users.auth0Id, session.user.sub),
-      with: {
-        organization: true,
-      },
     });
 
     if (!user?.organizationId) {
@@ -103,7 +100,6 @@ export async function GET() {
 
     return NextResponse.json(organization);
   } catch (error) {
-    console.error("Error fetching organization:", error);
     return NextResponse.json(
       { error: "Failed to fetch organization" },
       { status: 500 }

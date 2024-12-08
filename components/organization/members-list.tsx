@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, Trash2 } from "lucide-react";
+import { Trash2, Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import {
   AlertDialog,
@@ -26,6 +26,7 @@ import {
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User } from "@/lib/db/schema";
+import useCurrentUser from "./useCurrentUser";
 
 async function getMembers() {
   const response = await fetch("/api/organizations/members");
@@ -51,6 +52,9 @@ export function MembersList() {
     queryFn: getMembers,
   });
 
+  const { currentUser } = useCurrentUser();
+
+  const isAdmin = currentUser?.role === 'admin';
 
   const deleteMutation = useMutation({
     mutationFn: deleteMember,
@@ -80,7 +84,7 @@ export function MembersList() {
             <TableHead>Email</TableHead>
             <TableHead>Role</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead className="w-[100px]">Actions</TableHead>
+            {isAdmin && <TableHead className="w-[100px]">Actions</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -103,19 +107,22 @@ export function MembersList() {
                     <Badge variant="default">Active</Badge>
                   )}
                 </TableCell>
-                <TableCell>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setMemberToDelete(member.id)}
-                  >
-                    {deleteMutation.isPending && deleteMutation.variables === member.id ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Trash2 className="h-4 w-4" />
-                    )}
-                  </Button>
-                </TableCell>
+                {isAdmin && (
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setMemberToDelete(member.id)}
+                      disabled={deleteMutation.isPending && memberToDelete === member.id}
+                    >
+                      {deleteMutation.isPending && memberToDelete === member.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </TableCell>
+                )}
               </motion.tr>
             ))}
           </AnimatePresence>

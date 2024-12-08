@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { UploadButton } from "@/lib/uploadthing";
 import Image from "next/image";
 import { Pencil } from "lucide-react";
+import useCurrentUser from "./useCurrentUser";
 
 interface OrganizationSettingsProps {
   organization: {
@@ -34,6 +35,10 @@ export function OrganizationSettings({ organization }: OrganizationSettingsProps
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  const { currentUser } = useCurrentUser();
+
+  const isAdmin = currentUser?.role === 'admin';
+
   const mutation = useMutation({
     mutationFn: updateOrganization,
     onSuccess: () => {
@@ -52,6 +57,41 @@ export function OrganizationSettings({ organization }: OrganizationSettingsProps
       });
     },
   });
+
+  if (!isAdmin) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Organization Details</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="flex items-center gap-4">
+              <div className="relative h-24 w-24">
+                {organization.logo ? (
+                  <Image
+                    src={organization.logo}
+                    alt="Organization logo"
+                    fill
+                    className="rounded-lg object-cover"
+                  />
+                ) : (
+                  <div className="h-24 w-24 rounded-lg bg-muted flex items-center justify-center">
+                    <span className="text-2xl font-bold text-muted-foreground">
+                      {organization.name.charAt(0)}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <span className="text-lg font-medium">{organization.name}</span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

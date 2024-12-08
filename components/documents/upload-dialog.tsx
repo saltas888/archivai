@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -15,7 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { createDocument, extractDocumentData, getClients } from "@/lib/api";
-import { FileText, Loader2, CalendarIcon } from "lucide-react";
+import { FileText, Loader2, CalendarIcon, Sparkle } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
@@ -147,8 +147,14 @@ export function UploadDialog() {
       <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {step === 'upload' ? 'Upload Document' : 'Document Details'}
+            <div className="flex items-center gap-2">
+              {step === 'upload' ? 'Upload Document' : 'Document Details'}
+              <Sparkle className="h-4 w-4 text-primary" />
+            </div>
           </DialogTitle>
+          <DialogDescription>
+            {step === 'upload' ? 'Upload a document to start and let our agent extract the information. In the next step you will be able to customize it if you find any mistakes.' : 'Verify the extracted information and customize the document if needed.'}
+          </DialogDescription>
         </DialogHeader>
 
         {step === 'upload' ? (
