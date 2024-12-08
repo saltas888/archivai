@@ -79,11 +79,6 @@ export const columns: ColumnDef<Doc>[] = [
     cell: EditableCell,
   },
   {
-    accessorKey: "currency",
-    header: "Currency",
-    cell: EditableCell,
-  },
-  {
     accessorKey: "paidVatPercentage",
     header: "VAT %",
     cell: EditableCell,
@@ -91,11 +86,6 @@ export const columns: ColumnDef<Doc>[] = [
   {
     accessorKey: "purpose",
     header: "Purpose",
-    cell: EditableCell,
-  },
-  {
-    accessorKey: "additionalInfo",
-    header: "Additional Info",
     cell: EditableCell,
   },
   {

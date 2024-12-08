@@ -109,7 +109,6 @@ export function EditableCell({ getValue, row, column }: EditableCellProps) {
             onSelect={(newValue) => {
               if (newValue) {
                 setValue(newValue);
-                console.log(newValue);
                 mutation.mutate({
                   id: row.original.id,
                   data: { date: newValue },

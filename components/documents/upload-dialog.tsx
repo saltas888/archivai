@@ -340,14 +340,6 @@ export function UploadDialog() {
               )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="additionalInfo">Additional Information</Label>
-              <Input {...register("additionalInfo")} />
-              {errors.additionalInfo && (
-                <p className="text-sm text-destructive">{errors.additionalInfo.message}</p>
-              )}
-            </div>
-
             <Button type="submit" className="w-full" disabled={mutation.isPending}>
               {mutation.isPending ? "Creating..." : "Create Document"}
             </Button>
