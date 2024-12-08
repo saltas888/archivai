@@ -61,7 +61,8 @@ export function EditableCell({ getValue, row, column }: EditableCellProps) {
     setIsEditing(false);
   };
 
-  if (column.id === "recordType") {
+  if (column.id === "recordType" && isEditing) {
+    
     return (
       <Select
         value={value}

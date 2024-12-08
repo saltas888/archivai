@@ -27,27 +27,27 @@ export const columns: ColumnDef<Doc>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-  {
-    id: "file",
-    header: "File",
-    cell: ({ row }) => {
-      const doc = row.original;
-      if (!doc.fileUrl) return null;
+  // {
+  //   id: "file",
+  //   header: "File",
+  //   cell: ({ row }) => {
+  //     const doc = row.original;
+  //     if (!doc.fileUrl) return null;
       
-      return (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8"
-          onClick={() => window.open(doc.fileUrl, "_blank")}
-          title={doc.fileName || "View document"}
-        >
-          <FileIcon className="h-4 w-4" />
-        </Button>
-      );
-    },
-    enableSorting: false,
-  },
+  //     return (
+  //       <Button
+  //         variant="ghost"
+  //         size="icon"
+  //         className="h-8 w-8"
+  //         onClick={() => window.open(doc.fileUrl, "_blank")}
+  //         title={doc.fileName || "View document"}
+  //       >
+  //         <FileIcon className="h-4 w-4" />
+  //       </Button>
+  //     );
+  //   },
+  //   enableSorting: false,
+  // },
   {
     accessorKey: "recordType",
     header: "Type",
