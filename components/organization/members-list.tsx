@@ -51,7 +51,6 @@ export function MembersList() {
     queryFn: getMembers,
   });
 
-  console.log(memberToDelete)
 
   const deleteMutation = useMutation({
     mutationFn: deleteMember,
