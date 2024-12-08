@@ -56,6 +56,8 @@ export function UploadDialog() {
   });
 
   const date = watch('date');
+  const clientId = watch('clientId');
+  const recordType = watch('recordType');
   const mutation = useMutation({
     mutationFn: createDocument,
     onSuccess: () => {
@@ -91,6 +93,7 @@ export function UploadDialog() {
       if (data.recordType) setValue("recordType", data.recordType);
       if (data.purpose) setValue("purpose", data.purpose);
       if (data.currency) setValue("currency", data.currency);
+      if (data.clientId) setValue("clientId", data.clientId);
 
       setStep('details');
       toast({
@@ -216,7 +219,7 @@ export function UploadDialog() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="clientId">Client</Label>
-              <Select onValueChange={(value) => setValue("clientId", value)}>
+              <Select value={clientId} onValueChange={(value) => setValue("clientId", value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select client" />
                 </SelectTrigger>
@@ -235,7 +238,7 @@ export function UploadDialog() {
 
             <div className="space-y-2">
               <Label htmlFor="recordType">Record Type</Label>
-              <Select onValueChange={(value) => setValue("recordType", value as any)}>
+              <Select value={recordType} onValueChange={(value) => setValue("recordType", value as any)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>

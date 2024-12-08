@@ -105,6 +105,12 @@ export const clientRelations = relations(clients, ({ one, many }) => ({
   documents: many(docs),
 }));
 
+export const docRelations = relations(docs, ({ one }) => ({
+  client: one(clients, {
+    fields: [docs.clientId], references: [clients.id]
+  }),
+}));
+
 export type Organization = typeof organizations.$inferSelect;
 export type NewOrganization = typeof organizations.$inferInsert;
 export type User = typeof users.$inferSelect;

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { docs } from "@/lib/db/schema";
+import { docs, users } from "@/lib/db/schema";
 import { getSession } from "@auth0/nextjs-auth0";
 import { and, eq, ilike, SQL } from "drizzle-orm";
 
@@ -39,15 +39,24 @@ export async function POST(req: Request) {
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    const user = await db.query.users.findFirst({
+      where: eq(users.auth0Id, session.user.sub),
+    });
+    
+    if (!user?.organizationId) {
+      return NextResponse.json({ error: "No organization found" }, { status: 404 });
+    }
 
     const body = await req.json();
     const document = await db.insert(docs).values({
       ...body,
+      organizationId: user.organizationId,
       date: new Date(),
     }).returning();
 
     return NextResponse.json(document[0]);
   } catch (error) {
+    console.error("Error creating document:", error);
     return NextResponse.json({ error: "Failed to create document" }, { status: 500 });
   }
 }

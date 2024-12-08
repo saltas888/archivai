@@ -5,6 +5,8 @@ import { Doc } from "@/lib/db/schema";
 import { format } from "date-fns";
 import { DocumentActions } from "@/components/documents/table/document-actions";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { FileIcon, ExternalLink } from "lucide-react";
 
 export const columns: ColumnDef<Doc>[] = [
   {
@@ -80,8 +82,25 @@ export const columns: ColumnDef<Doc>[] = [
     header: "Additional Info",
   },
   {
-    accessorKey: "fileName",
-    header: "File Name",
+    id: "file",
+    header: "File",
+    cell: ({ row }) => {
+      const doc = row.original;
+      if (!doc.fileUrl) return null;
+      
+      return (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
+          onClick={() => window.open(doc.fileUrl as string, "_blank")}
+          title={doc.fileName || "View document"}
+        >
+          <FileIcon className="h-6 w-6" />
+        </Button>
+      );
+    },
+    enableSorting: false,
   },
   {
     id: "actions",

@@ -58,6 +58,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(client[0]);
   } catch (error) {
+    console.error("Error creating client:", error);
     return NextResponse.json(
       { error: "Failed to create client" },
       { status: 500 }
