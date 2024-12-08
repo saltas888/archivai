@@ -124,7 +124,6 @@ export function UploadDialog() {
       ...data,
       fileUrl,
       fileName,
-      date: new Date(),
       totalAmount: parseFloat(data.totalAmount),
       paidVatPercentage: data.paidVatPercentage ? parseFloat(data.paidVatPercentage) : null,
     });

@@ -127,7 +127,7 @@ export async function POST(req: Request) {
             case "serviceprovidervatnumber":
             case "serviceprovidervat":
             case "vatnumber":
-              extractedData.vatNumber = cleanValue;
+              extractedData.vatNumber = cleanValue.trim().replace(/\s/g, "");
               break;
             case "serviceprovidername":
               extractedData.serviceProviderName = cleanValue;

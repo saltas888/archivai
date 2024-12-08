@@ -51,7 +51,7 @@ export async function POST(req: Request) {
     const document = await db.insert(docs).values({
       ...body,
       organizationId: user.organizationId,
-      date: new Date(),
+      date: new Date(body.date),
     }).returning();
 
     return NextResponse.json(document[0]);
