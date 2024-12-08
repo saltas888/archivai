@@ -22,6 +22,19 @@ export async function createDocument(document: Omit<NewDoc, "id" | "createdAt" |
   }
   return response.json() as Promise<Doc>;
 }
+export async function deleteDocuments(ids: number[]) {
+  const response = await fetch("/api/documents/delete", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ ids }),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to delete documents");
+  }
+  return response.json();
+}
 
 export async function extractDocumentData(fileUrl: string) {
   const response = await fetch("/api/documents/extract", {

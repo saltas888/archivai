@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
@@ -14,11 +14,13 @@ export default function DocumentsPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const queryClient = useQueryClient();
 
   const { data: documents = [], isError } = useQuery({
     queryKey: ["documents", searchParams.toString()],
     queryFn: () => getDocuments(Object.fromEntries(searchParams)),
   });
+
 
   if (isError) {
     toast({
@@ -42,10 +44,17 @@ export default function DocumentsPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Documents</h1>
-        <UploadDialog />
+        <div className="flex gap-2">
+          <UploadDialog />
+        </div>
       </div>
       <DocumentFilters onFilterChange={onFilterChange} />
       <DataTable columns={columns} data={documents} />
     </div>
   );
 }
+
+interface DeleteDocumentsButtonProps {
+  onDelete: (ids: number[]) => void;
+}
+
