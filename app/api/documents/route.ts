@@ -10,6 +10,7 @@ export async function GET(request: Request) {
     const recordType = searchParams.get("recordType");
     const provider = searchParams.get("provider");
     const recordNumber = searchParams.get("recordNumber");
+    const clientId = searchParams.get("clientId");
 
     const whereClauses: SQL<unknown>[] = [];
     
@@ -25,6 +26,11 @@ export async function GET(request: Request) {
     if (recordNumber) {
       whereClauses.push(ilike(docs.recordNumber, `%${recordNumber}%`));
     }
+
+    if (clientId) {
+      whereClauses.push(eq(docs.clientId, clientId));
+    }
+
     const query = db.select().from(docs).where(and(...whereClauses));
     const documents = await query.orderBy(docs.createdAt);
     return NextResponse.json(documents);

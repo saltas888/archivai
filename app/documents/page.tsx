@@ -14,7 +14,6 @@ export default function DocumentsPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const queryClient = useQueryClient();
 
   const { data: documents = [], isError } = useQuery({
     queryKey: ["documents", searchParams.toString()],

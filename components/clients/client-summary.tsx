@@ -13,7 +13,7 @@ export function ClientSummary({ client }: ClientSummaryProps) {
         <CardTitle>Client Summary</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           <div>
             <p className="text-sm text-muted-foreground">Email</p>
             <p className="font-medium">{client.email}</p>

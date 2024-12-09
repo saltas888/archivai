@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { ClientSummary } from "@/components/clients/client-summary";
 import { ClientAlerts } from "@/components/clients/client-alerts";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ClientInvoices } from "@/components/clients/client-invoices";
 
 async function getClient(id: string) {
   const response = await fetch(`/api/clients/${id}`);
@@ -43,6 +44,10 @@ export default function ClientSpacePage() {
       <div className="grid grid-cols-2 gap-6">
         <ClientSummary client={client} />
         <ClientAlerts client={client} />
+      </div>
+      
+      <div className="grid grid-cols-1">
+        <ClientInvoices clientId={clientId} />
       </div>
     </div>
   );
