@@ -10,7 +10,7 @@ const auth = async () => {
 };
 
 export const ourFileRouter = {
-  documentUploader: f({ pdf: { maxFileSize: "4MB" } })
+  documentUploader: f({ pdf: { maxFileSize: "4MB" }, image: { maxFileSize: "4MB" } })
     .middleware(async () => {
       const user = await auth();
       return user;
