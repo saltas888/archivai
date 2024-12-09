@@ -2,36 +2,59 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { docs, users } from "@/lib/db/schema";
 import { getSession } from "@auth0/nextjs-auth0";
-import { and, eq, ilike, SQL } from "drizzle-orm";
+import { and, eq, gte, ilike, inArray, lte, SQL } from "drizzle-orm";
 
 export async function GET(request: Request) {
   try {
+    const session = await getSession();
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const user = await db.query.users.findFirst({
+      where: eq(users.auth0Id, session.user.sub),
+    });
+
+    if (!user?.organizationId) {
+      return NextResponse.json({ error: "No organization found" }, { status: 404 });
+    }
+
     const { searchParams } = new URL(request.url);
     const recordType = searchParams.get("recordType");
     const provider = searchParams.get("provider");
     const recordNumber = searchParams.get("recordNumber");
-    const clientId = searchParams.get("clientId");
+    const startDate = searchParams.get("startDate");
+    const endDate = searchParams.get("endDate");
+    const clientIds = searchParams.get("clientIds")?.split(",");
 
-    const whereClauses: SQL<unknown>[] = [];
-    
+    let conditions = [eq(docs.organizationId, user.organizationId)];
 
     if (recordType) {
-      whereClauses.push(eq(docs.recordType, recordType as any));
+      conditions.push(eq(docs.recordType, recordType as any));
     }
 
     if (provider) {
-      whereClauses.push(ilike(docs.serviceProviderName, `%${provider}%`));
+      conditions.push(ilike(docs.serviceProviderName, `%${provider}%`));
     }
 
     if (recordNumber) {
-      whereClauses.push(ilike(docs.recordNumber, `%${recordNumber}%`));
+      conditions.push(ilike(docs.recordNumber, `%${recordNumber}%`));
     }
 
-    if (clientId) {
-      whereClauses.push(eq(docs.clientId, clientId));
+    if (startDate) {
+      conditions.push(gte(docs.date, new Date(startDate)));
     }
 
-    const query = db.select().from(docs).where(and(...whereClauses));
+    if (endDate) {
+      conditions.push(lte(docs.date, new Date(endDate)));
+    }
+
+    if (clientIds && clientIds.length > 0) {
+      conditions.push(inArray(docs.clientId, clientIds));
+    }
+
+
+    const query = db.select().from(docs).where(and(...conditions));
     const documents = await query.orderBy(docs.createdAt);
     return NextResponse.json(documents);
   } catch (error) {

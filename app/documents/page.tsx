@@ -31,10 +31,11 @@ export default function DocumentsPage() {
 
   const onFilterChange = (key: string, value: string | null) => {
     const params = new URLSearchParams(searchParams);
-    if (value) {
-      params.set(key, value);
-    } else {
+    if (value === null || value === "undefined" || (value === "all")) {
       params.delete(key);
+    }
+    else {
+      params.set(key, value);
     }
     router.push(`${pathname}?${params.toString()}`);
   };
