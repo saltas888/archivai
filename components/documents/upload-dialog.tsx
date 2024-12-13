@@ -157,14 +157,8 @@ export function UploadDialog() {
               fill
               className="object-contain"
             />
-          ) : isPDF ? (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <FileIcon className="h-20 w-20 text-muted-foreground" />
-              <span className="absolute mt-16 text-sm text-muted-foreground">
-                PDF Document
-              </span>
-            </div>
-          ) : null}
+          ) : isPDF ? <embed toolbar="0" className="aspect-[3/4] relative bg-muted rounded-lg overflow-hidden" src={fileUrl} width="100%" height="100%" />
+          : null}
         </div>
       </div>
     );
