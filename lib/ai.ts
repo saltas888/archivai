@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { User } from "@/lib/db/schema";
-import { createPropmpt, TEXT_SYSTEM_PROMPT, IMAGE_SYSTEM_PROMPT, PDF_SYSTEM_PROMPT } from "@/lib/prompt"; 
+import { createPropmpt, TEXT_SYSTEM_PROMPT, IMAGE_SYSTEM_PROMPT, PDF_SYSTEM_PROMPT } from "@/lib/prompt/docs"; 
 import { getText } from "@/lib/pdftotext";
 
 // Select model https://docs.anthropic.com/en/docs/about-claude/models
@@ -18,7 +18,7 @@ export async function extractTextFromFile(user: User, fileUrl: string): Promise<
   const buffer = await response.arrayBuffer();
   const fileBuffer = Buffer.from(buffer);
   const mediaType = response.headers.get('content-type') || 'application/pdf';
-  let pdfAsText: boolean = false;
+  let pdfAsText: boolean = true;
   const isPDFFile = mediaType.includes("pdf") && !pdfAsText;
   let systemPrompt;
   let anthropicContent;

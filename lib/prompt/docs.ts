@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { db } from "./db";
-import { Client, clients, User } from "./db/schema";
+import { db } from "../db";
+import { Client, clients, User } from "../db/schema";
 
 export const TEXT_SYSTEM_PROMPT = `You are an AI accountant tasked with extracting specific information from invoices or transaction records. Your goal is to analyze the provided text and extract key details accurately.`;
 export const IMAGE_SYSTEM_PROMPT = `You are an AI accountant tasked with extracting specific information from invoices or transaction records. Your goal is to analyze the provided image and extract key details accurately.`;
