@@ -6,8 +6,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { FileIcon } from "lucide-react";
 import { EditableCell } from "@/components/documents/table/editable-cell";
+import { useTranslations } from "next-intl";
 
-export const columns: ColumnDef<Doc>[] = [
+export function useDocumentsColumns():ColumnDef<Doc>[] {
+  const t = useTranslations();
+  return[
   {
     id: "select",
     header: ({ table }) => (
@@ -50,42 +53,42 @@ export const columns: ColumnDef<Doc>[] = [
   // },
   {
     accessorKey: "date",
-    header: "Date",
+    header: t('documents.table.date'),
     cell: EditableCell,
   },
   {
     accessorKey: "totalAmount",
-    header: "Amount",
+    header: t('documents.table.totalAmount'),
     cell: EditableCell,
   },
   {
     accessorKey: "recordNumber",
-    header: "Record#",
+    header: t('documents.table.recordNumber'),
     cell: EditableCell,
   },
   {
     accessorKey: "paidVatPercentage",
-    header: "VAT %",
+    header: t('documents.table.paidVatPercentage'),
     cell: EditableCell,
   },
   {
     accessorKey: "serviceProviderName",
-    header: "Service Provider",
+    header: t('documents.table.serviceProviderName'),
     cell: EditableCell,
   },
   {
     accessorKey: "vatNumber",
-    header: "VAT Number",
+    header: t('documents.table.vatNumber'),
     cell: EditableCell,
   },
   {
     accessorKey: "purpose",
-    header: "Purpose",
+    header: t('documents.table.purpose'),
     cell: EditableCell,
   },
   {
     accessorKey: "recordType",
-    header: "Type",
+    header: t('documents.table.recordType'),
     cell: EditableCell,
   },
   {
@@ -94,3 +97,4 @@ export const columns: ColumnDef<Doc>[] = [
     enableHiding: false,
   },
 ];
+}

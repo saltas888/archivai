@@ -1,0 +1,63 @@
+{
+  "navigation": {
+    "documents": "Documents",
+    "clients": "Clients",
+    "organization": "Organization",
+    "dashboard": "Dashboard",
+    "settings": "Settings"
+  },
+  "documents": {
+    "title": "Documents",
+    "actions": {
+      "new": "New Document",
+      "edit": "Edit",
+      "delete": "Delete",
+      "view": "View",
+      "upload": "Upload Document",
+      "error": "Error",
+      "viewError": "Failed to view document",
+      "editError": "Failed to edit document",
+      "deleteError": "Failed to delete document"
+    },
+    "filters": {
+      "search": "Search documents...",
+      "date": "Date",
+      "type": "Type",
+      "status": "Status",
+      "all": "All",
+      "invoice": "Invoice",
+      "receipt": "Receipt",
+      "contract": "Contract"
+    },
+    "table": {
+      "name": "Name",
+      "type": "Type",
+      "size": "Size",
+      "actions": "Actions",
+      "date": "Date",
+      "totalAmount": "Total Amount",
+      "recordNumber": "Record#",
+      "paidVatPercentage": "Vat %",
+      "serviceProviderName": "Service Provider Name",
+      "vatNumber": "Vat Number",
+      "purpose": "Purpose",
+      "recordType": "Record Type"
+    },
+    "errors": {
+      "fetchFailed": "Failed to fetch documents"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View"
+  }
+} 

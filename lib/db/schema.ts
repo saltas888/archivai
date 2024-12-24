@@ -1,7 +1,5 @@
 import { relations, sql } from "drizzle-orm";
 import {
-  index,
-  integer,
   pgTableCreator,
   timestamp,
   varchar,
@@ -43,6 +41,19 @@ export const users = createTable('users', {
   isInvited: boolean('is_invited').default(false),
   invitedBy: uuid('invited_by'),
   invitedAt: timestamp("invited_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+    () => new Date()
+  ),
+});
+
+// Add to existing schema.ts
+export const userSettings = createTable('user_settings', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  language: varchar('language', { length: 2 }).notNull().default('en'),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -105,6 +116,10 @@ export const usersRelations = relations(users, ({ one }) => ({
 		fields: [users.invitedBy],
 		references: [users.id],
 	}),
+  settings: one(userSettings, {
+    fields: [users.id],
+    references: [userSettings.userId],
+  }),
 }));
 
 export const clientRelations = relations(clients, ({ one, many }) => ({

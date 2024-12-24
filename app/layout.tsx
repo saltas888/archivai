@@ -7,7 +7,10 @@ import { UserProvider } from "@auth0/nextjs-auth0/client";
 import { AuthNav } from "@/components/auth/auth-nav";
 import { cn } from "@/lib/utils";
 import { QueryProvider } from "@/components/providers/query-provider";
-
+import { I18nProvider } from "@/components/providers/i18n-provider";
+import {NextIntlClientProvider} from 'next-intl';
+import {getLocale, getMessages} from 'next-intl/server';
+ 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -15,18 +18,25 @@ export const metadata: Metadata = {
   description: "Manage your documents efficiently",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+ 
+  // Providing all messages to the client
+  // side is the easiest way to get started
+  const messages = await getMessages();
+  
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn(inter.className, "min-h-screen bg-background")}>
         <UserProvider>
-          <QueryProvider>
-            <div className="flex min-h-screen">
-              <Sidebar />
+            <QueryProvider>
+            <NextIntlClientProvider messages={messages}>
+              <div className="flex min-h-screen">
+                <Sidebar />
               <div className="flex-1 flex flex-col">
                 <header className="h-16 border-b flex items-center px-6">
                   <div className="ml-auto">
@@ -38,8 +48,9 @@ export default function RootLayout({
                 </main>
               </div>
             </div>
-            <Toaster />
-          </QueryProvider>
+              <Toaster />
+          </NextIntlClientProvider>
+            </QueryProvider>
         </UserProvider>
       </body>
     </html>

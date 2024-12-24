@@ -1,0 +1,63 @@
+{
+  "navigation": {
+    "documents": "Έγγραφα",
+    "clients": "Πελάτες",
+    "organization": "Οργανισμός",
+    "dashboard": "Αρχική",
+    "settings": "Ρυθμίσεις"
+  },
+  "documents": {
+    "title": "Έγγραφα",
+    "actions": {
+      "new": "Νέο Έγγραφο",
+      "edit": "Επεξεργασία",
+      "delete": "Διαγραφή",
+      "view": "Προβολή",
+      "upload": "Μεταφόρτωση Εγγράφου",
+      "error": "Σφάλμα",
+      "viewError": "Αποτυχία προβολής εγγράφου",
+      "editError": "Αποτυχία επεξεργασίας εγγράφου",
+      "deleteError": "Αποτυχία διαγραφής εγγράφου"
+    },
+    "filters": {
+      "search": "Αναζήτηση εγγράφων...",
+      "date": "Ημερομηνία",
+      "type": "Τύπος",
+      "status": "Κατάσταση",
+      "all": "Όλα",
+      "invoice": "Τιμολόγιο",
+      "receipt": "Απόδειξη",
+      "contract": "Συμβόλαιο"
+    },
+    "table": {
+      "name": "Όνομα",
+      "type": "Τύπος",
+      "size": "Μέγεθος",
+      "date": "Ημερομηνία",
+      "actions": "Ενέργειες",
+      "totalAmount": "Συνολικό Ποσό",
+      "recordNumber": "Αριθμός Εγγράφου",
+      "paidVatPercentage": "ΦΠΑ",
+      "serviceProviderName": "Όνομα Επιχείρησης",
+      "vatNumber": "Αριθμός ΦΠΑ",
+      "purpose": "Περιγραφή",
+      "recordType": "Τύπος Εγγράφου"
+    },
+    "errors": {
+      "fetchFailed": "Αποτυχία λήψης εγγράφων"
+    }
+  },
+  "settings": {
+    "title": "Ρυθμίσεις",
+    "language": "Γλώσσα"
+  },
+  "common": {
+    "loading": "Φόρτωση...",
+    "error": "Σφάλμα",
+    "save": "Αποθήκευση",
+    "cancel": "Ακύρωση",
+    "delete": "Διαγραφή",
+    "edit": "Επεξεργασία",
+    "view": "Προβολή"
+  }
+} 
