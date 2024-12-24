@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { UploadButton } from "@/lib/uploadthing";
+import { UploadButton, UploadDropzone } from "@/lib/uploadthing";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -209,7 +209,7 @@ export function UploadDialog() {
               </div>
             ) : (
               <div className="w-full max-w-md space-y-4">
-                <UploadButton
+                <UploadDropzone
                   endpoint="documentUploader"
                   onClientUploadComplete={(res) => {
                     if (res?.[0]) {
