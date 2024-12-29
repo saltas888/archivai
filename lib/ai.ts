@@ -81,7 +81,7 @@ export async function extractTextFromFile(user: User, fileUrl: string): Promise<
     });
   } else {
     message = await anthropic.messages.create({
-      model: isPDFFile ? EXPENSIVE_MODEL : FAST_MODEL,
+      model: EXPENSIVE_MODEL,
       max_tokens: 1024,
       system: systemPrompt,
       messages: [{

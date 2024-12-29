@@ -55,7 +55,7 @@ export async function POST(req: Request) {
       if (line.includes(":")) {
         const [key, value] = line.split(":");
         const cleanKey = key.trim().toLowerCase().replace(/[^a-z]/g, "");
-        const cleanValue = value.trim();
+        const cleanValue = value.trim().replace(/,/g, "");
         
         if (cleanValue && cleanValue !== "-") {
           switch (cleanKey) {
