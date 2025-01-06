@@ -15,11 +15,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { createDocument, extractDocumentData, getClients } from "@/lib/api";
-import { FileText, Loader2, CalendarIcon, Sparkle, FileIcon } from "lucide-react";
+import { FileText, Loader2, CalendarIcon, Sparkle, FileIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 import Image from "next/image";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { ClientUploadedFileData } from "uploadthing/types";
 
 const documentSchema = z.object({
   recordType: z.enum(RECORD_TYPE_VALUES),
@@ -42,9 +43,15 @@ type DocumentFormData = z.infer<typeof documentSchema>;
 export function UploadDialog() {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<'upload' | 'details'>('upload');
+  const [files, setFiles] = useState<ClientUploadedFileData<{
+    uploadedBy: any;
+    url: string;
+}>[]>();
   const [fileUrl, setFileUrl] = useState<string>();
   const [fileName, setFileName] = useState<string>();
   const [fileType, setFileType] = useState<string>("");
+  const [currentFileIndex, setCurrentFileIndex] = useState(0);
+  const [processedFiles, setProcessedFiles] = useState<Record<string, any>>({});
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
@@ -64,11 +71,18 @@ export function UploadDialog() {
     mutationFn: createDocument,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["documents"] });
-      setOpen(false);
-      reset();
-      setFileUrl(undefined);
-      setFileName(undefined);
-      setStep('upload');
+      const newFiles = files?.filter(f => f.url !== fileUrl);
+      setFiles(newFiles);
+      if (newFiles.length > 0) {
+        handleFileChange(0, newFiles);
+      } else {
+        // reset
+        setOpen(false);
+        reset();
+        setFileUrl(undefined);
+        setFileName(undefined);
+        setStep('upload');
+      }
       toast({
         title: "Success",
         description: "Document created successfully",
@@ -83,25 +97,32 @@ export function UploadDialog() {
     },
   });
 
+  function setFormValues(data) {
+    if (data.serviceProviderName) setValue("serviceProviderName", data.serviceProviderName);
+    if (data.vatNumber) setValue("vatNumber", data.vatNumber);
+    if (data.recordNumber) setValue("recordNumber", data.recordNumber);
+    if (data.totalAmount) setValue("totalAmount", data.totalAmount);
+    if (data.paidVatPercentage) setValue("paidVatPercentage", data.paidVatPercentage);
+    if (data.date) setValue("date", new Date(data.date));
+    if (data.recordType) setValue("recordType", data.recordType);
+    if (data.purpose) setValue("purpose", data.purpose);
+    if (data.currency) setValue("currency", data.currency);
+    if (data.clientId) setValue("clientId", data.clientId);
+
+  }
+
   const extractMutation = useMutation({
     mutationFn: extractDocumentData,
-    onSuccess: (data) => {
-      if (data.serviceProviderName) setValue("serviceProviderName", data.serviceProviderName);
-      if (data.vatNumber) setValue("vatNumber", data.vatNumber);
-      if (data.recordNumber) setValue("recordNumber", data.recordNumber);
-      if (data.totalAmount) setValue("totalAmount", data.totalAmount);
-      if (data.paidVatPercentage) setValue("paidVatPercentage", data.paidVatPercentage);
-      if (data.date) setValue("date", new Date(data.date));
-      if (data.recordType) setValue("recordType", data.recordType);
-      if (data.purpose) setValue("purpose", data.purpose);
-      if (data.currency) setValue("currency", data.currency);
-      if (data.clientId) setValue("clientId", data.clientId);
-
+    onSuccess: (data, variables: string, context: unknown) => {
       setStep('details');
       toast({
         title: "Success",
         description: "Document data extracted successfully",
       });
+      console.log(variables)
+      setProcessedFiles(prev => ({...prev, [variables]: data}));
+      setFormValues(data);
+      return data;
     },
     onError: () => {
       setStep('details');
@@ -138,6 +159,8 @@ export function UploadDialog() {
       reset();
       setFileUrl(undefined);
       setFileName(undefined);
+      setCurrentFileIndex(0);
+      setProcessedFiles({});
     }
   };
 
@@ -164,6 +187,21 @@ export function UploadDialog() {
     );
   };
 
+  const handleFileChange = (newIndex: number, files) => {
+    setCurrentFileIndex(newIndex);
+    const newFile = files![newIndex];
+    setFileUrl(newFile.url);
+    setFileName(newFile.name);
+    setFileType(newFile.type || "");
+    
+    // Trigger extraction if this file hasn't been processed yet
+    if (!processedFiles[newFile.url]) {
+      extractMutation.mutate(newFile.url);
+    } else {
+      setFormValues(processedFiles[newFile.url]);
+    }
+  };
+  console.log({ date })
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
@@ -172,13 +210,41 @@ export function UploadDialog() {
       <DialogContent className="sm:max-w-[1200px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            <div className="flex items-center gap-2">
-              {step === 'upload' ? 'Upload Document' : 'Document Details'}
-              <Sparkle className="h-4 w-4 text-primary" />
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center gap-2">
+                {step === 'upload' ? 'Upload Document' : 'Document Details'}
+                <Sparkle className="h-4 w-4 text-primary" />
+              </div>
+              {files && files.length > 0 && (
+                <div className="flex items-center gap-2">
+                  {currentFileIndex > 0 && <Button
+                    variant="ghost"
+                    size="icon"
+                    disabled={currentFileIndex === 0}
+                    onClick={() => handleFileChange(currentFileIndex - 1, files)}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>}
+                  <span className="text-sm">
+                    {fileName} ({currentFileIndex + 1}/{files.length})
+                  </span>
+                  {currentFileIndex < (files.length - 1) && <Button
+                    variant="ghost"
+                    size="icon"
+                    disabled={currentFileIndex === files.length - 1}
+                    onClick={() => handleFileChange(currentFileIndex + 1, files)}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                  }
+                </div>
+              )}
             </div>
           </DialogTitle>
           <DialogDescription>
-            {step === 'upload' ? 'Upload a document to start and let our agent extract the information. In the next step you will be able to customize it if you find any mistakes.' : 'Verify the extracted information and customize the document if needed.'}
+            {step === 'upload' 
+              ? 'Upload a document to start and let our agent extract the information. In the next step you will be able to customize it if you find any mistakes.' 
+              : 'Verify the extracted information and customize the document if needed.'}
           </DialogDescription>
         </DialogHeader>
 
@@ -213,16 +279,16 @@ export function UploadDialog() {
                   endpoint="documentUploader"
                   onClientUploadComplete={(res) => {
                     if (res?.[0]) {
-                      setFileUrl(res[0].url);
-                      setFileName(res[0].name);
-                      setFileType(res[0].type || "");
+                      // Start extraction immediately after upload
+                      console.log(res);
+                      setFiles(res);
                       toast({
                         title: "File uploaded",
                         description: "Your file has been uploaded successfully.",
                       });
                       
                       // Start extraction immediately after upload
-                      extractMutation.mutate(res[0].url);
+                      handleFileChange(0, res);
                     }
                   }}
                   onUploadError={(error: Error) => {
@@ -246,6 +312,11 @@ export function UploadDialog() {
               </div>
             )}
           </div>
+        ) : extractMutation.isPending ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Extracting Data...
+          </>
         ) : (
           <div className="grid grid-cols-2 gap-4">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

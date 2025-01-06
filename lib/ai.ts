@@ -66,14 +66,14 @@ export async function extractTextFromFile(user: User, fileUrl: string): Promise<
       },
     ]
   }
-
+  console.time("anthropic")
   let message;
   if (isPDFFile) {
     message = await anthropic.beta.messages.create({
-        model: isPDFFile ? EXPENSIVE_MODEL : FAST_MODEL,
+        model: !pdfAsText ? EXPENSIVE_MODEL : FAST_MODEL,
         max_tokens: 1024,
         system: systemPrompt,
-        betas: isPDFFile ? ["pdfs-2024-09-25"] : [],
+        betas: !pdfAsText ? ["pdfs-2024-09-25"] : [],
         messages: [{
           role: "user",
           content: anthropicContent,
@@ -81,7 +81,7 @@ export async function extractTextFromFile(user: User, fileUrl: string): Promise<
     });
   } else {
     message = await anthropic.messages.create({
-      model: EXPENSIVE_MODEL,
+      model: FAST_MODEL,
       max_tokens: 1024,
       system: systemPrompt,
       messages: [{
@@ -90,6 +90,7 @@ export async function extractTextFromFile(user: User, fileUrl: string): Promise<
       }],
   })
   }
+  console.timeEnd("anthropic")
   const responseText = message.content[0].type === "text" ? message.content[0].text : null;
   return responseText;
 }
