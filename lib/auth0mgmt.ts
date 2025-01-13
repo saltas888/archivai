@@ -1,7 +1,8 @@
-import { ManagementClient, UsersByEmailManager } from 'auth0';
+import { ManagementClient } from 'auth0';
 
+type Auth0Role = "member" | "admin"
 class Auth0InvitationService {
-  private managementClient: ManagementClient;
+  private readonly managementClient: ManagementClient;
 
   constructor() {
     // Ensure these environment variables are set in your .env file
@@ -22,7 +23,7 @@ class Auth0InvitationService {
   async inviteUser(
     email: string, 
     inviterName: string, 
-    roles?: string[]
+    roles?: Auth0Role[]
   ) {
     try {
       const {invitationUrl, userId} = await this.createUser(email)
@@ -77,7 +78,6 @@ class Auth0InvitationService {
         includeEmailInRedirect: true,
       });
       const invitationUrl = changePasswordResponse.data.ticket;
-      // console.log("invitationUrl", invitationUrl);
       return { invitationUrl, userId };
     } catch (error) {
       console.error('Error creating user:', error);
@@ -92,7 +92,7 @@ class Auth0InvitationService {
    * @param userId - ID of the user
    * @param roles - Array of role IDs to assign
    */
-  private async assignUserRoles(userId: string, roles: string[]) {
+  private async assignUserRoles(userId: string, roles: Auth0Role[]) {
     const roleIds = {
       'member': 'rol_veZHsP6ygmQAYeAi',
       'admin': 'rol_ynZvOixpm81Z1CKR',

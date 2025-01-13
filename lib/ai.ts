@@ -66,7 +66,6 @@ export async function extractTextFromFile(user: User, fileUrl: string): Promise<
       },
     ]
   }
-  console.time("anthropic")
   let message;
   if (isPDFFile) {
     message = await anthropic.beta.messages.create({
@@ -76,6 +75,7 @@ export async function extractTextFromFile(user: User, fileUrl: string): Promise<
         betas: !pdfAsText ? ["pdfs-2024-09-25"] : [],
         messages: [{
           role: "user",
+          // @ts-expect-error Maybe we will change the content here in the future
           content: anthropicContent,
         }],
     });
@@ -86,6 +86,7 @@ export async function extractTextFromFile(user: User, fileUrl: string): Promise<
       system: systemPrompt,
       messages: [{
         role: "user",
+        // @ts-expect-error Maybe we will change the content here in the future
         content: anthropicContent,
       }],
   })

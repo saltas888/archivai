@@ -9,7 +9,7 @@ import { EditableCell } from "@/components/documents/table/editable-cell";
 import { useTranslations } from "next-intl";
 
 export function useDocumentsColumns():ColumnDef<Doc>[] {
-  const t = useTranslations();
+  const t = useTranslations('documents.table') as (key: string) => string;
   return[
   {
     id: "select",

@@ -3,9 +3,8 @@ import { Input } from "@/components/ui/input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateDocument } from "@/lib/api";
 import { useToast } from "@/components/ui/use-toast";
-import { Doc } from "@/lib/db/schema";
+import { Doc, RECORD_TYPE_VALUES } from "@/lib/db/schema";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { RECORD_TYPE_VALUES } from "@/lib/db/schema";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon } from "lucide-react";
@@ -14,7 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 
 interface EditableCellProps {
-    getValue: any;
+  getValue: () => any;
   row: { original: Doc };
   column: { id: string };
 }

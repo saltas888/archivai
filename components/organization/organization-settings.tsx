@@ -10,13 +10,10 @@ import { UploadButton } from "@/lib/uploadthing";
 import Image from "next/image";
 import { Pencil } from "lucide-react";
 import useCurrentUser from "./useCurrentUser";
+import { Organization } from "@/lib/db/schema";
 
 interface OrganizationSettingsProps {
-  organization: {
-    id: string;
-    name: string;
-    logo?: string | null;
-  };
+  organization: Pick<Organization, 'id' | 'name' | 'logo'>;
 }
 
 async function updateOrganization(data: { name: string; logo?: string }) {

@@ -36,7 +36,7 @@ export async function deleteDocuments(ids: number[]) {
   return response.json();
 }
 
-export async function updateDocument(id: number, data: Partial<Doc>) {
+export async function updateDocument(id: number, data: Partial<Doc>): Promise<Doc> {
   const response = await fetch(`/api/documents/${id}`, {
     method: "PATCH",
     headers: {
@@ -47,7 +47,7 @@ export async function updateDocument(id: number, data: Partial<Doc>) {
   if (!response.ok) {
     throw new Error("Failed to update document");
   }
-  return response.json() as Promise<Doc>;
+  return response.json();
 }
 
 export async function extractDocumentData(fileUrl: string) {
