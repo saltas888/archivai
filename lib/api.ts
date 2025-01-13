@@ -9,7 +9,7 @@ export async function getDocuments(filters: Record<string, string> = {}) {
   return response.json() as Promise<Doc[]>;
 }
 
-export async function createDocument(document: Omit<NewDoc, "id" | "createdAt" | "updatedAt">) {
+export async function createDocument(document: Omit<NewDoc, "id" | "createdAt" | "updatedAt" | "organizationId">) {
   const response = await fetch("/api/documents", {
     method: "POST",
     headers: {

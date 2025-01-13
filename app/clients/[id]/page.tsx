@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useParams } from "next/navigation";
 import { ClientSummary } from "@/components/clients/client-summary";
 import { ClientAlerts } from "@/components/clients/client-alerts";
@@ -16,6 +15,7 @@ async function getClient(id: string) {
 
 export default function ClientSpacePage() {
   const params = useParams();
+  
   const clientId = params.id as string;
 
   const { data: client, isLoading, error } = useQuery({

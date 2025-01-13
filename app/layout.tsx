@@ -7,9 +7,8 @@ import { UserProvider } from "@auth0/nextjs-auth0/client";
 import { AuthNav } from "@/components/auth/auth-nav";
 import { cn } from "@/lib/utils";
 import { QueryProvider } from "@/components/providers/query-provider";
-import { I18nProvider } from "@/components/providers/i18n-provider";
 import {NextIntlClientProvider} from 'next-intl';
-import {getLocale, getMessages} from 'next-intl/server';
+import {getMessages} from 'next-intl/server';
  
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,8 +22,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = await getLocale();
- 
   // Providing all messages to the client
   // side is the easiest way to get started
   const messages = await getMessages();

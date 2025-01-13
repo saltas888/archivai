@@ -1,16 +1,10 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@auth0/nextjs-auth0";
 import Anthropic from "@anthropic-ai/sdk";
-import { Client, clients, User, users } from "@/lib/db/schema";
+import { clients, users } from "@/lib/db/schema";
 import { db } from "@/lib/db";
 import { eq } from "drizzle-orm";
-import { createImagePropmpt, createTextPropmpt } from "@/lib/prompt";
-import { getText } from "@/lib/pdftotext";
 import { extractTextFromFile } from "@/lib/ai";
-
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
 
 function symbolToCurrency(symbol: string) {
   switch (symbol) {
@@ -83,6 +77,7 @@ export async function POST(req: Request) {
               break;
             case "currency":
               extractedData.currency = cleanValue;
+              break;
             case "paidvatpercentage":
             case "vatpercentage":
               extractedData.paidVatPercentage = cleanValue.replace(/[^0-9.]/g, "");
@@ -93,7 +88,7 @@ export async function POST(req: Request) {
             case "recordtype":
               extractedData.recordType = cleanValue.toLowerCase();
               break;
-            case "clientvatnumber":
+            case "clientvatnumber": {
               const client = await db.query.clients.findFirst({
                 // Replace spaces with empty string
                 where: eq(clients.vat, cleanValue.trim().replace(/\s/g, "")),
@@ -102,6 +97,7 @@ export async function POST(req: Request) {
                 extractedData.clientId = client.id;
               }
               break;
+            }
           }
         }
       }

@@ -19,7 +19,7 @@ interface EditableCellProps {
   column: { id: string };
 }
 
-export function EditableCell({ getValue, row, column }: EditableCellProps) {
+export function EditableCell({ getValue, row, column }: Readonly<EditableCellProps>) {
   const initialValue = getValue();
   const [value, setValue] = useState(initialValue);
   const [isEditing, setIsEditing] = useState(false);
@@ -61,6 +61,16 @@ export function EditableCell({ getValue, row, column }: EditableCellProps) {
     setIsEditing(false);
   };
 
+  const formatCellValue = (value: any, columnId: string, currency: string | null | undefined) => {
+    if (columnId === "totalAmount") {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: currency ?? "USD",
+      }).format(parseFloat(value));
+    }
+    return value;
+  };
+
   if (column.id === "recordType" && isEditing) {
     
     return (
@@ -70,7 +80,7 @@ export function EditableCell({ getValue, row, column }: EditableCellProps) {
           setValue(newValue);
           mutation.mutate({
             id: row.original.id,
-            data: { recordType: newValue },
+            data: { recordType: newValue as "invoice" | "transaction" },
           });
         }}
       >
@@ -148,12 +158,7 @@ export function EditableCell({ getValue, row, column }: EditableCellProps) {
       className="h-8 flex items-center cursor-pointer hover:bg-accent hover:text-accent-foreground px-2 rounded"
       onClick={() => setIsEditing(true)}
     >
-      {column.id === "totalAmount"
-        ? new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: row.original.currency || "USD",
-          }).format(parseFloat(value))
-        : value}
+      {formatCellValue(value, column.id, row.original.currency)}
     </div>
   );
 }

@@ -6,16 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { UploadButton, UploadDropzone } from "@/lib/uploadthing";
+import { UploadDropzone } from "@/lib/uploadthing";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { RECORD_TYPE_VALUES } from "@/lib/db/schema";
+import { NewDoc, RECORD_TYPE_VALUES } from "@/lib/db/schema";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { createDocument, extractDocumentData, getClients } from "@/lib/api";
-import { FileText, Loader2, CalendarIcon, Sparkle, FileIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { FileText, Loader2, CalendarIcon, Sparkle, ChevronLeft, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 import Image from "next/image";
 import { Calendar } from "@/components/ui/calendar";
@@ -70,10 +70,13 @@ export function UploadDialog() {
   const mutation = useMutation({
     mutationFn: createDocument,
     onSuccess: () => {
+      if (!files) {
+        throw new Error("no files found");
+      }
       queryClient.invalidateQueries({ queryKey: ["documents"] });
       const newFiles = files?.filter(f => f.url !== fileUrl);
       setFiles(newFiles);
-      if (newFiles.length > 0) {
+      if (newFiles?.length > 0) {
         handleFileChange(0, newFiles);
       } else {
         // reset
@@ -97,7 +100,7 @@ export function UploadDialog() {
     },
   });
 
-  function setFormValues(data) {
+  function setFormValues(data: NewDoc) {
     if (data.serviceProviderName) setValue("serviceProviderName", data.serviceProviderName);
     if (data.vatNumber) setValue("vatNumber", data.vatNumber);
     if (data.recordNumber) setValue("recordNumber", data.recordNumber);
@@ -147,8 +150,8 @@ export function UploadDialog() {
       ...data,
       fileUrl,
       fileName,
-      totalAmount: parseFloat(data.totalAmount),
-      paidVatPercentage: data.paidVatPercentage ? parseFloat(data.paidVatPercentage) : null,
+      totalAmount: data.totalAmount,
+      paidVatPercentage: data.paidVatPercentage,
     });
   };
 
@@ -170,26 +173,38 @@ export function UploadDialog() {
     const isPDF = fileType.includes("pdf");
     const isImage = fileType.includes("image");
 
+    const renderPreviewContent = () => {
+      if (isImage) {
+        return (
+          <Image
+            src={fileUrl}
+            alt="Document preview"
+            fill
+            className="object-contain"
+          />
+        );
+      }
+      if (isPDF) {
+        return <embed className="aspect-[3/4] relative bg-muted rounded-lg overflow-hidden" src={fileUrl} width="100%" height="100%" />;
+      }
+      return null;
+    };
+
     return (
       <div className="p-4 border-l">
         <div className="aspect-[3/4] relative bg-muted rounded-lg overflow-hidden">
-          {isImage ? (
-            <Image
-              src={fileUrl}
-              alt="Document preview"
-              fill
-              className="object-contain"
-            />
-          ) : isPDF ? <embed toolbar="0" className="aspect-[3/4] relative bg-muted rounded-lg overflow-hidden" src={fileUrl} width="100%" height="100%" />
-          : null}
+          {renderPreviewContent()}
         </div>
       </div>
     );
   };
 
-  const handleFileChange = (newIndex: number, files) => {
+  const handleFileChange = (newIndex: number, files: ClientUploadedFileData<{
+    uploadedBy: any;
+    url: string;
+}>[]) => {
     setCurrentFileIndex(newIndex);
-    const newFile = files![newIndex];
+    const newFile = files[newIndex];
     setFileUrl(newFile.url);
     setFileName(newFile.name);
     setFileType(newFile.type || "");
@@ -377,6 +392,7 @@ export function UploadDialog() {
                     <Calendar
                       mode="single"
                       selected={date}
+                      required
                       onSelect={(date: Date) => date && setValue('date', date)}
                     />
                   </PopoverContent>

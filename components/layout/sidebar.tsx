@@ -22,7 +22,7 @@ export function Sidebar() {
   return (
     <div className="w-64 border-r bg-white">
       <div className="flex h-16 items-center px-4 border-b">
-        <span className="font-semibold">ArcheioAI</span>
+        <span className="font-semibold">MindFlair</span>
       </div>
       <div className="space-y-1 p-2">
         {menuItems.map((item) => {

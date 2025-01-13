@@ -54,6 +54,8 @@ export const userSettings = createTable('user_settings', {
   id: uuid('id').defaultRandom().primaryKey(),
   userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   language: varchar('language', { length: 2 }).notNull().default('en'),
+  gmailAccessToken: text('gmail_access_token'),
+  gmailRefreshToken: text('gmail_refresh_token'),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -98,8 +100,8 @@ export const docs = createTable('docs', {
   paidVatPercentage: decimal('paid_vat_percentage', { precision: 5, scale: 2 }),
   purpose: text('purpose'),
   additionalInfo: text('additional_info'),
-  fileName: text('file_name'),
-  fileUrl: text('file_url'),
+  fileName: text('file_name').notNull(),
+  fileUrl: text('file_url').notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),

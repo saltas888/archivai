@@ -21,7 +21,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
 
@@ -29,7 +28,7 @@ interface DocumentActionsProps {
   document: Doc;
 }
 
-export function DocumentActions({ document }: DocumentActionsProps) {
+export function DocumentActions({ document }: Readonly<DocumentActionsProps>) {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const queryClient = useQueryClient();
   const { toast } = useToast();

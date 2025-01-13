@@ -1,13 +1,12 @@
-import { NextApiRequest } from 'next';
-import { handleAuth, handleCallback } from '@auth0/nextjs-auth0';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { handleAuth, handleCallback, Session } from '@auth0/nextjs-auth0';
 import { db } from '@/lib/db';
 import { users } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 
-
 export const GET = handleAuth({
   callback: handleCallback({
-    async afterCallback(req: NextApiRequest, session) {
+    async afterCallback(req: NextApiRequest, res: NextApiResponse, session: Session) {
       if (session?.user) {
         const existingUser = await db.query.users.findFirst({
           where: eq(users.email, session.user.email),

@@ -1,8 +1,9 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SettingsLanguage } from "@/components/settings/settings-language";
+import { SettingsGmail } from "@/components/settings/settings-gmail";
 import { Loader2 } from "lucide-react";
 
 export default function SettingsPage() {
@@ -33,6 +34,7 @@ export default function SettingsPage() {
         </CardHeader>
         <CardContent className="space-y-6">
           <SettingsLanguage initialValue={settings?.language} />
+          <SettingsGmail />
         </CardContent>
       </Card>
     </div>
