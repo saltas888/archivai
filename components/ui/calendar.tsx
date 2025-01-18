@@ -10,7 +10,7 @@ import type { ChevronProps, DayPickerProps } from "react-day-picker";
 // eslint-disable-next-line import/no-unresolved -- Unsure why this is being flagged with no reason
 // import "react-day-picker/dist/style.css";
 
-function Chevron(props: ChevronProps) {
+function Chevron(props: Readonly<ChevronProps>) {
   // Left/Right chevron means navigation
   if (props.orientation === "left") {
     return (

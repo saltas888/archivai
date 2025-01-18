@@ -72,6 +72,7 @@ export async function PATCH(req: Request) {
 
     return NextResponse.json(organization);
   } catch (error) {
+    console.error("Error updating organization:", error);
     return NextResponse.json(
       { error: "Failed to update organization" },
       { status: 500 }
@@ -100,6 +101,7 @@ export async function GET() {
 
     return NextResponse.json(organization);
   } catch (error) {
+    console.error("Error fetching organization:", error);
     return NextResponse.json(
       { error: "Failed to fetch organization" },
       { status: 500 }

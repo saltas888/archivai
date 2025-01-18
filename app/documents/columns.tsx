@@ -53,42 +53,42 @@ export function useDocumentsColumns():ColumnDef<Doc>[] {
   // },
   {
     accessorKey: "date",
-    header: t('documents.table.date'),
+    header: t('date'),
     cell: EditableCell,
   },
   {
     accessorKey: "totalAmount",
-    header: t('documents.table.totalAmount'),
+    header: t('totalAmount'),
     cell: EditableCell,
   },
   {
     accessorKey: "recordNumber",
-    header: t('documents.table.recordNumber'),
+    header: t('recordNumber'),
     cell: EditableCell,
   },
   {
     accessorKey: "paidVatPercentage",
-    header: t('documents.table.paidVatPercentage'),
+    header: t('paidVatPercentage'),
     cell: EditableCell,
   },
   {
     accessorKey: "serviceProviderName",
-    header: t('documents.table.serviceProviderName'),
+    header: t('serviceProviderName'),
     cell: EditableCell,
   },
   {
     accessorKey: "vatNumber",
-    header: t('documents.table.vatNumber'),
+    header: t('vatNumber'),
     cell: EditableCell,
   },
   {
     accessorKey: "purpose",
-    header: t('documents.table.purpose'),
+    header: t('purpose'),
     cell: EditableCell,
   },
   {
     accessorKey: "recordType",
-    header: t('documents.table.recordType'),
+    header: t('recordType'),
     cell: EditableCell,
   },
   {

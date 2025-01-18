@@ -6,7 +6,8 @@ import { eq } from 'drizzle-orm';
 
 export const GET = handleAuth({
   callback: handleCallback({
-    async afterCallback(req: NextApiRequest, res: NextApiResponse, session: Session) {
+    // @ts-expect-error I dont know why
+    async afterCallback(req: NextApiRequest, session: Session) {
       if (session?.user) {
         const existingUser = await db.query.users.findFirst({
           where: eq(users.email, session.user.email),
@@ -33,6 +34,7 @@ export const GET = handleAuth({
           });
         }
       }
+      console.log("Session1234",session);
       return session;
     },
   }),

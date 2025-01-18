@@ -8,7 +8,7 @@ import { AuthNav } from "@/components/auth/auth-nav";
 import { cn } from "@/lib/utils";
 import { QueryProvider } from "@/components/providers/query-provider";
 import {NextIntlClientProvider} from 'next-intl';
-import {getMessages} from 'next-intl/server';
+import {getLocale, getMessages} from 'next-intl/server';
  
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +24,7 @@ export default async function RootLayout({
 }>) {
   // Providing all messages to the client
   // side is the easiest way to get started
+  const locale = await getLocale();
   const messages = await getMessages();
   
   return (
